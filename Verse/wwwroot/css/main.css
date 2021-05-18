@@ -1,0 +1,49 @@
+html, body {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+
+    background: rgb(63,129,79);
+    background: radial-gradient(circle, rgba(63,129,79,1) 0%, rgba(42,84,57,1) 63%, rgba(10,14,23,1) 100%);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+* {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+}
+
+:root {
+    --bottom-inset: 150px;
+}
+
+button {
+    padding: 0;
+    border: none;
+    outline: none;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 10px 3px #feff00;
+    background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: calc(100vh - var(--bottom-inset));
+}
