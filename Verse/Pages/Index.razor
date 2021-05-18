@@ -2,3 +2,39 @@
 @using Verse.Models
 @inherits MainPage
 
+@if (State.Syllables == null)
+{
+    <div class="flex-center">Скажите фразу</div>
+}
+else
+{
+    <div class="flex-center">
+        <div class="result-container">
+            <div class="syllables-container">
+                @foreach (Syllable[] word in State.Syllables)
+                {
+                    <span class="word">
+                        @foreach (Syllable syllable in word)
+                        {
+                            if (syllable.Type == SyllableType.Consonant)
+                            {
+                                <span class="simple">@syllable.Text</span>
+                            }
+                            else if (syllable.Type == SyllableType.Unstressed)
+                            {
+                                <span class="unstressed">@syllable.Text</span>
+                            }
+                            else
+                            {
+                                <span class="stressed">@(syllable.Text)</span><span class="stress">&#x301;</span>
+                            }
+                        }
+                    </span>
+                }
+            </div>
+            <div class="foot-info">
+                <div class="foot-schema">@Foot.Schema</div><div class="foot-name">@Foot.Name</div>
+            </div>
+        </div>
+    </div>
+}

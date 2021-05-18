@@ -13,15 +13,49 @@ namespace Verse.Pages
     {
         [Inject]
         public IJSRuntime Js { get; set; }
-        [Inject]
         public SessionState State { get; set; } = new();
+        public Foot Foot => new (State.CurrentFoot);
 
         protected override Task OnInitializedAsync()
         {
             if (Program.LogEnabled)
                 Console.WriteLine("Main component opened");
-            
-            Js.InvokeVoidAsync("initializeClient", Program.GetClientToken(), DotNetObjectReference.Create(this));
+
+            State = new SessionState
+            {
+                Syllables = new []
+                {
+                    new []
+                    {
+                        new Syllable {Text = "Б", Type = SyllableType.Consonant},
+                        new Syllable {Text = "у", Type = SyllableType.Stressed},
+                        new Syllable {Text = "р", Type = SyllableType.Consonant},
+                        new Syllable {Text = "я", Type = SyllableType.Unstressed},
+                    },
+                    new []
+                    {
+                        new Syllable {Text = "мгл", Type = SyllableType.Consonant},
+                        new Syllable {Text = "о", Type = SyllableType.Stressed},
+                        new Syllable {Text = "ю", Type = SyllableType.Unstressed},
+                    },
+                    new []
+                    {
+                        new Syllable {Text = "н", Type = SyllableType.Consonant},
+                        new Syllable {Text = "е", Type = SyllableType.Stressed},
+                        new Syllable {Text = "б", Type = SyllableType.Consonant},
+                        new Syllable {Text = "o", Type = SyllableType.Unstressed},
+                    },
+                    new []
+                    {
+                        new Syllable {Text = "кр", Type = SyllableType.Consonant},
+                        new Syllable {Text = "о", Type = SyllableType.Stressed},
+                        new Syllable {Text = "е", Type = SyllableType.Unstressed},
+                        new Syllable {Text = "т", Type = SyllableType.Consonant}
+                    }
+                },
+                CurrentFoot = FootType.Chorea
+            };
+            //Js.InvokeVoidAsync("initializeClient", Program.GetClientToken(), DotNetObjectReference.Create(this));
             return base.OnInitializedAsync();
         }
 

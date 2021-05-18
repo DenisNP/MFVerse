@@ -4,6 +4,7 @@ namespace Verse.Models
 {
     public class SessionState
     {
-        public List<Item> Items { get; set; } = new();
+        public Syllable[][] Syllables { get; set; }
+        public FootType CurrentFoot { get; set; }
     }
 }

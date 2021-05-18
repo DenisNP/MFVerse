@@ -4,9 +4,11 @@ html, body {
     padding: 0;
     width: 100%;
     min-height: 100vh;
+}
 
-    background: rgb(63,129,79);
-    background: radial-gradient(circle, rgba(63,129,79,1) 0%, rgba(42,84,57,1) 63%, rgba(10,14,23,1) 100%);
+@font-face {
+    font-family: "MonotypeMine";
+    src: url(../monotype.ttf) format("truetype");
 }
 
 body {
