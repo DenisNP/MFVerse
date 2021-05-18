@@ -13,7 +13,7 @@ namespace Verse.Services
 
         private void Init()
         {
-            _appHash = Environment.GetEnvironmentVariable("SBERDB_HASH_ALGEBRA");
+            _appHash = Environment.GetEnvironmentVariable("SBERDB_HASH_VERSE");
             
             if (string.IsNullOrEmpty(_appHash))
                 throw new ArgumentNullException(nameof(_appHash), "Invalid state storage hash");
