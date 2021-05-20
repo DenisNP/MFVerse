@@ -13,15 +13,15 @@ namespace Verse.Pages
     {
         [Inject]
         public IJSRuntime Js { get; set; }
-        public SessionState State { get; set; } = new();
-        public Foot Foot => new (State.CurrentFoot);
+        public ParseResult LastResult { get; set; }
+        public Foot Foot => new (LastResult.FootType);
 
         protected override Task OnInitializedAsync()
         {
             if (Program.LogEnabled)
                 Console.WriteLine("Main component opened");
 
-            State = new SessionState
+            LastResult = new ParseResult
             {
                 Syllables = new []
                 {
@@ -53,7 +53,7 @@ namespace Verse.Pages
                         new Syllable {Text = "т", Type = SyllableType.Consonant}
                     }
                 },
-                CurrentFoot = FootType.Chorea
+                FootType = FootType.Chorea
             };
             //Js.InvokeVoidAsync("initializeClient", Program.GetClientToken(), DotNetObjectReference.Create(this));
             return base.OnInitializedAsync();
@@ -73,7 +73,7 @@ namespace Verse.Pages
                     var stateString = command.Data["state_updated"].ToString();
                     if (stateString != null)
                     {
-                        State = JsonConvert.DeserializeObject<SessionState>(stateString);
+                        LastResult = JsonConvert.DeserializeObject<ParseResult>(stateString);
                         StateHasChanged();
                     }
                 }

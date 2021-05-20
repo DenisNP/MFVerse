@@ -26,11 +26,10 @@ namespace Verse
             services.AddMemoryCache();
 
             services.AddSingleton<IStateStorage<UserState>, SberDbStateStorage>();
-            services.AddSingleton<IStateStorage<SessionState>, MemcacheStateStorage>();
             services.AddSingleton<SaluteService>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SaluteService saluteService)
         {
             if (env.IsDevelopment())
             {
@@ -52,6 +51,8 @@ namespace Verse
                 endpoints.MapFallbackToPage("/_Host");
                 endpoints.MapControllers();
             });
+            
+            saluteService.Init();
         }
     }
 }

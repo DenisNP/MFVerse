@@ -2,7 +2,7 @@
 @using Verse.Models
 @inherits MainPage
 
-@if (State.Syllables == null)
+@if (LastResult.Syllables == null)
 {
     <div class="flex-center">Скажите фразу</div>
 }
@@ -11,7 +11,7 @@ else
     <div class="flex-center">
         <div class="result-container">
             <div class="syllables-container">
-                @foreach (Syllable[] word in State.Syllables)
+                @foreach (Syllable[] word in LastResult.Syllables)
                 {
                     <span class="word">
                         @foreach (Syllable syllable in word)
