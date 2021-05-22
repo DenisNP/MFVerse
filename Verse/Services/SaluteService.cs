@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Nestor;
 using Nestor.Models;
+using Newtonsoft.Json;
 using Verse.Abstract;
 using Verse.Helpers;
 using Verse.Models;
@@ -47,15 +48,6 @@ namespace Verse.Services
                 if (request.HasWords("помощь", "что уметь", "что мочь"))
                     return Help(request);
 
-                /*foreach (FootType footType in Enum.GetValues<FootType>())
-                {
-                    if (footType == FootType.Unknown) continue;
-                    var foot = new Foot(footType);
-
-                    if (request.HasWords(foot.Name))
-                        return TellAbout(foot, request);
-                }*/
-
                 return TooShort(request);
             }
 
@@ -81,8 +73,8 @@ namespace Verse.Services
 
             var response = new SaluteResponse(request);
             Phrase phrase = timeLeft.TotalDays < 30
-                ? new Phrase("1", "", "")
-                : new Phrase("", "", "");
+                ? new Phrase("Привет", "Привет", "Привет")
+                : new Phrase("Привет 1", "Привет 1", "Привет 1");
 
             response
                 .AppendText(request, phrase)
@@ -96,16 +88,38 @@ namespace Verse.Services
 
         private SaluteResponse TryParseFoot(SaluteRequest request)
         {
-            throw new NotImplementedException();
+            int numVowels = string.Join("", request.Tokens).Count(c => _vowels.Contains(c.ToString()));
+            if (numVowels <= 3)
+                return TooShort(request);
+
+            var response = new SaluteResponse(request);
+            ParseResult result = GetParseResult(request.Tokens, out int bestDistance);
+            
+            if (bestDistance > 8 || result.FootType == FootType.Unknown)
+            {
+                // cannot determine foot
+                response
+                    .AppendText(request, new Phrase("Не понимаю", "Не понимаю", "Не понимаю"))
+                    .AppendSendData("state_updated", JsonConvert.SerializeObject(ParseResult.Empty));
+                return response;
+            }
+            
+            // return parsed phrase and foot
+            var foot = new Foot(result.FootType);
+            response
+                .AppendText(foot.Name + "\n" + foot.Description)
+                .AppendSendData("state_updated", JsonConvert.SerializeObject(result));
+
+            return response;
         }
 
-        private ParseResult GetParseResult(string[] tokens)
+        private ParseResult GetParseResult(string[] tokens, out int bestDistance)
         {
             int[] stresses = tokens.SelectMany(GetStresses).ToArray();
 
             // find best foot
             Foot bestFoot = null;
-            var bestDistance = int.MaxValue;
+            bestDistance = int.MaxValue;
             foreach (FootType footType in Enum.GetValues<FootType>())
             {
                 var foot = new Foot(footType);
@@ -176,8 +190,13 @@ namespace Verse.Services
             {
                 int wordStress = stresses[i];
                 int maskStress = mask[i];
-                if (wordStress != -1 && wordStress != maskStress)
-                    dist++;
+                if (wordStress != -1)
+                {
+                    if (maskStress == 0 && wordStress == 1)
+                        dist += 5;
+                    else if (maskStress == 1 && wordStress == 0)
+                        dist += 1;
+                }
             }
 
             return dist;
@@ -220,19 +239,22 @@ namespace Verse.Services
             return accents;
         }
 
-        /*private SaluteResponse TellAbout(Foot foot, SaluteRequest request)
-        {
-            throw new NotImplementedException();
-        }*/
-
         private SaluteResponse Help(SaluteRequest request)
         {
-            throw new NotImplementedException();
+            var response = new SaluteResponse(request);
+            response
+                .AppendText(request, new Phrase("Помощь", "Помощь", "Помощь"))
+                .AppendSendData("state_update", JsonConvert.SerializeObject(ParseResult.Empty));
+            return response;
         }
 
         private SaluteResponse TooShort(SaluteRequest request)
         {
-            throw new NotImplementedException();
+            var response = new SaluteResponse(request);
+            response
+                .AppendText(request, new Phrase("Слишком коротко", "Слишком коротко", "Слишком коротко"))
+                .AppendSendData("state_updated", JsonConvert.SerializeObject(ParseResult.Empty));
+            return response;
         }
 
         private string RandomSuggestion()

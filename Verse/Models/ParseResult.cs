@@ -2,7 +2,9 @@
 {
     public class ParseResult
     {
-        public Syllable[][] Syllables { get; set; }
-        public FootType FootType { get; set; }
+        public Syllable[][] Syllables { get; set; } = null;
+        public FootType FootType { get; set; } = FootType.Unknown;
+
+        public static ParseResult Empty => new ParseResult();
     }
 }

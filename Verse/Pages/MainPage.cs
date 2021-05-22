@@ -20,42 +20,8 @@ namespace Verse.Pages
         {
             if (Program.LogEnabled)
                 Console.WriteLine("Main component opened");
-
-            LastResult = new ParseResult
-            {
-                Syllables = new []
-                {
-                    new []
-                    {
-                        new Syllable {Text = "Б", Type = SyllableType.Consonant},
-                        new Syllable {Text = "у", Type = SyllableType.Stressed},
-                        new Syllable {Text = "р", Type = SyllableType.Consonant},
-                        new Syllable {Text = "я", Type = SyllableType.Unstressed},
-                    },
-                    new []
-                    {
-                        new Syllable {Text = "мгл", Type = SyllableType.Consonant},
-                        new Syllable {Text = "о", Type = SyllableType.Stressed},
-                        new Syllable {Text = "ю", Type = SyllableType.Unstressed},
-                    },
-                    new []
-                    {
-                        new Syllable {Text = "н", Type = SyllableType.Consonant},
-                        new Syllable {Text = "е", Type = SyllableType.Stressed},
-                        new Syllable {Text = "б", Type = SyllableType.Consonant},
-                        new Syllable {Text = "o", Type = SyllableType.Unstressed},
-                    },
-                    new []
-                    {
-                        new Syllable {Text = "кр", Type = SyllableType.Consonant},
-                        new Syllable {Text = "о", Type = SyllableType.Stressed},
-                        new Syllable {Text = "е", Type = SyllableType.Unstressed},
-                        new Syllable {Text = "т", Type = SyllableType.Consonant}
-                    }
-                },
-                FootType = FootType.Chorea
-            };
-            //Js.InvokeVoidAsync("initializeClient", Program.GetClientToken(), DotNetObjectReference.Create(this));
+            
+            Js.InvokeVoidAsync("initializeClient", Program.GetClientToken(), DotNetObjectReference.Create(this));
             return base.OnInitializedAsync();
         }
 
