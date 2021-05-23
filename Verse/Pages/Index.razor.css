@@ -1,15 +1,36 @@
+.help-block {
+    max-width: 300px;
+    font-style: italic;
+    text-align: center;
+    font-size: 18px;
+    color: #adadad;
+    line-height: 25px;
+    margin: 0 auto var(--bottom-inset) auto;
+    flex-direction: column;
+}
+
 .result-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 0 10px;
+    transform: scale(1.5);
+    max-width: 66vw;
+}
+
+@media (max-width: 767px) {
+    .result-container {
+        transform: scale(1.0);
+        max-width: 100vw;
+    }
 }
 
 .syllables-container {
     display: flex;
     flex-wrap: wrap;
     font-family: "MonotypeMine", serif;
-    font-size: 26px;
     align-items: baseline;
+    justify-content: center;
 }
 
 .simple {
@@ -17,38 +38,57 @@
 }
 
 .word {
-    margin-right: 6px;
+    margin-right: 8px;
+    color: #000000;
+    font-size: 40px;
+    opacity: 0.65;
 }
 
 .stressed {
-    color: #00c300;
-    font-weight: bold;
 }
 
 .unstressed {
-    font-weight: bold;
-    /*text-decoration: underline;*/
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
 }
 
 .stress {
-    font-size: 33px;
-    color: #07d807;
+    font-size: 41px;
     font-weight: bold;
-    transform: translate(4px, 9px);
+    transform: translate(7px, 8px);
     display: inline-block;
 }
 
+.select-color {
+    color: #008642;
+}
+
 .foot-info {
+    margin-top: 22px;
+}
+
+.foot-title {
+    font-size: 24px;
     display: flex;
-    margin-top: 15px;
+    justify-content: center;
+    margin-bottom: 14px;
 }
 
 .foot-schema {
-    margin-right: 10px;
+    margin-right: 18px;
     font-weight: bold;
-    color: #00b8ff;
+    opacity: 0.65;
+    color: #2c8fd6;
 }
 
 .foot-name {
     color: #adadad;
+}
+
+.foot-desc {
+    max-width: 300px;
+    text-align: center;
+    font-size: 18px;
+    color: #adadad;
+    line-height: 25px;
 }

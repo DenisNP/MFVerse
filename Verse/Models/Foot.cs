@@ -18,11 +18,11 @@ namespace Verse.Models
         };
         public string Description => Type switch {
             FootType.Unknown => "",
-            FootType.Iambic => "Ямб",
-            FootType.Chorea => "Хорей",
-            FootType.Dactyl => "Дактиль",
-            FootType.Amphibrachium => "Амфибрахий",
-            FootType.Anapest => "Анапест",
+            FootType.Iambic => "Двусложный размер с ударением на второй слог",
+            FootType.Chorea => "Двусложный размер с ударением на первый слог",
+            FootType.Dactyl => "Трёхсложный размер с ударением на первый слог",
+            FootType.Amphibrachium => "Трёхсложный размер с ударением на второй слог",
+            FootType.Anapest => "Трёхсложный размер с ударением на третий слог",
             _ => throw new ArgumentOutOfRangeException()
         };
         public int[] Mask => Type switch {
@@ -38,11 +38,11 @@ namespace Verse.Models
         public string Schema => Type switch
         {
             FootType.Unknown => "",
-            FootType.Iambic => "_ | _ |",
-            FootType.Chorea => "| _ | _",
-            FootType.Dactyl => "| _ _ | _ _",
-            FootType.Amphibrachium => "_ | _ _ | _",
-            FootType.Anapest => "_ _ | _ _ |",
+            FootType.Iambic => "— | — |",
+            FootType.Chorea => "| — | —",
+            FootType.Dactyl => "| — — | — —",
+            FootType.Amphibrachium => "— | — — | —",
+            FootType.Anapest => "— — | — — |",
             _ => throw new ArgumentOutOfRangeException()
         };
 

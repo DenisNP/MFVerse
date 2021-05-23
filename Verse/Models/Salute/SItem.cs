@@ -36,7 +36,7 @@ namespace Verse.Models.Salute
 
         public Bubble(string text)
         {
-            Text = _tagsRegex.Replace(text, "").Replace("'", "");
+            Text = _tagsRegex.Replace(text, "").Replace("'", "").Replace("*", "");
         }
     }
 

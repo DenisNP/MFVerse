@@ -4,7 +4,10 @@
 
 @if (LastResult?.Syllables == null)
 {
-    <div class="flex-center">Скажите фразу</div>
+    <div class="flex-center help-block">
+        Прочитайте одну строку из стихотворения, и я определю его <b>стихотворный размер.</b><br>
+        На текущий момент я понимаю классические двусложные (ямб, хорей) и трёхсложные (дактиль, амфибрахий, анапест) размеры.
+    </div>
 }
 else
 {
@@ -22,18 +25,22 @@ else
                             }
                             else if (syllable.Type == SyllableType.Unstressed)
                             {
-                                <span class="unstressed">@syllable.Text</span>
+                                <span class="unstressed select-color">@syllable.Text</span>
                             }
                             else
                             {
-                                <span class="stressed">@(syllable.Text)</span><span class="stress">&#x301;</span>
+                                <span class="stressed select-color">@(syllable.Text)</span><span class="stress select-color">&#x301;</span>
                             }
                         }
                     </span>
                 }
             </div>
             <div class="foot-info">
-                <div class="foot-schema">@Foot.Schema</div><div class="foot-name">@Foot.Name</div>
+                <div class="foot-title">
+                    <div class="foot-schema">@Foot.Schema</div>
+                    <div class="foot-name"><i>@Foot.Name</i></div>
+                </div>
+                <div class="foot-desc"><i>@Foot.Description</i></div>
             </div>
         </div>
     </div>

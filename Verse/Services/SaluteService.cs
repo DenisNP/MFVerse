@@ -4,7 +4,6 @@ using System.Linq;
 using Nestor;
 using Nestor.Models;
 using Newtonsoft.Json;
-using Verse.Abstract;
 using Verse.Helpers;
 using Verse.Models;
 using Verse.Models.Salute.Web;
@@ -13,8 +12,6 @@ namespace Verse.Services
 {
     public class SaluteService
     {
-        private readonly IStateStorage<UserState> _userStateStorage;
-
         private static readonly string[] Suggestions =
         {
             ""
@@ -22,13 +19,6 @@ namespace Verse.Services
         private readonly Random _random = new();
         private NestorMorph _nestor;
         private readonly HashSet<string> _vowels = new() {"а", "о", "у", "ы", "э", "я", "ё", "ю", "и", "е"};
-
-        public SaluteService(
-            IStateStorage<UserState> userStateStorage
-        )
-        {
-            _userStateStorage = userStateStorage;
-        }
 
         public void Init()
         {
@@ -49,6 +39,10 @@ namespace Verse.Services
                     return Help(request);
 
                 return TooShort(request);
+            } 
+            else if (request.Tokens.Length >= 8)
+            {
+                return TooLong(request);
             }
 
             return TryParseFoot(request);
@@ -68,29 +62,31 @@ namespace Verse.Services
 
         private SaluteResponse Enter(SaluteRequest request)
         {
-            UserState state = _userStateStorage.GetState(request.UserId);
-            TimeSpan timeLeft = DateTime.UtcNow - state.LastEnter;
-
             var response = new SaluteResponse(request);
-            Phrase phrase = timeLeft.TotalDays < 30
-                ? new Phrase("Привет", "Привет", "Привет")
-                : new Phrase("Привет 1", "Привет 1", "Привет 1");
-
+            var phrase = new Phrase(
+                "<speak>Здоровья вам желаю, <break time=\"1ms\" />леди или сэр.<break time=\"200ms\" />" +
+                "Читайте мне строку, я вам скажу размер.</speak>",
+                "<speak>Вам, пользователь, здравствовать желаю. <break time=\"200ms\" />" +
+                "Отправьте мне строку — размер я распозна'ю.</speak>",
+                "<speak>Привет-привет, <break time=\"1ms\" />любимый юзер мой. <break time=\"200ms\" />" +
+                "Прочти мне стих, пойму размер любой!<speak>"
+            );
+            
             response
                 .AppendText(request, phrase)
-                .AppendSuggestions(RandomSuggestion(), "Выход");
+                .AppendSuggestions(RandomSuggestion(), "Помощь", "Выход");
 
-            state.LastEnter = DateTime.UtcNow;
-            _userStateStorage.SetState(request.UserId, state);
-            
+            response.Payload.AutoListening = true;
             return response;
         }
 
         private SaluteResponse TryParseFoot(SaluteRequest request)
         {
             int numVowels = string.Join("", request.Tokens).Count(c => _vowels.Contains(c.ToString()));
-            if (numVowels <= 3)
+            if (numVowels < 4)
                 return TooShort(request);
+            if (numVowels > 20)
+                return TooLong(request);
 
             var response = new SaluteResponse(request);
             ParseResult result = GetParseResult(request.Tokens, out int bestDistance);
@@ -100,15 +96,17 @@ namespace Verse.Services
                 // cannot determine foot
                 response
                     .AppendText(request, new Phrase("Не понимаю", "Не понимаю", "Не понимаю"))
-                    .AppendSendData("state_updated", JsonConvert.SerializeObject(ParseResult.Empty));
+                    .AppendSendData("state_updated", JsonConvert.SerializeObject(ParseResult.Empty))
+                    .AppendSuggestions(RandomSuggestion(), "Помощь", "Выход");
                 return response;
             }
             
             // return parsed phrase and foot
             var foot = new Foot(result.FootType);
             response
-                .AppendText(foot.Name + "\n" + foot.Description)
-                .AppendSendData("state_updated", JsonConvert.SerializeObject(result));
+                .AppendText($"<speak>{foot.Name}<break time=\"600ms\" />\n{foot.Description}</speak>")
+                .AppendSendData("state_updated", JsonConvert.SerializeObject(result))
+                .AppendSuggestions(RandomSuggestion(), "Помощь", "Выход");
 
             return response;
         }
@@ -263,8 +261,19 @@ namespace Verse.Services
         {
             var response = new SaluteResponse(request);
             response
-                .AppendText(request, new Phrase("Помощь", "Помощь", "Помощь"))
-                .AppendSendData("state_update", JsonConvert.SerializeObject(ParseResult.Empty));
+                .AppendText(
+                    request,
+                    new Phrase(
+                        "Прочитайте мне строку из стихотворения, и я скажу вам его стихотворный размер. " +
+                        "Пока что я понимаю классические двухсложные и трёхсложные размеры.",
+                        "Прочитайте мне строку из стихотворения, и я определю его стихотворный размер. " +
+                        "На настоящий момент я понимаю классические двухсложные и трёхсложные размеры.",
+                        "Прочитай мне строчку из стихотворения, и я скажу тебе его стихотворный размер. " +
+                        "Пока что я могу понимать простые двухсложные и трёхсложные размеры."
+                    )
+                )
+                .AppendSendData("state_update", JsonConvert.SerializeObject(ParseResult.Empty))
+                .AppendSuggestions(RandomSuggestion(), "Помощь", "Выход");
             return response;
         }
 
@@ -272,8 +281,31 @@ namespace Verse.Services
         {
             var response = new SaluteResponse(request);
             response
-                .AppendText(request, new Phrase("Слишком коротко", "Слишком коротко", "Слишком коротко"))
-                .AppendSendData("state_updated", JsonConvert.SerializeObject(ParseResult.Empty));
+                .AppendText(
+                    request, new Phrase(
+                        "Простите, текст слишком короткий, по нему не смогу определить размер",
+                        "Для определения размера нужна строка подлиннее",
+                        "Прости, строчка слишком короткая, давай подлиннее"
+                    )
+                )
+                .AppendSendData("state_updated", JsonConvert.SerializeObject(ParseResult.Empty))
+                .AppendSuggestions(RandomSuggestion(), "Помощь", "Выход");
+            return response;
+        }
+        
+        private SaluteResponse TooLong(SaluteRequest request)
+        {
+            var response = new SaluteResponse(request);
+            response
+                .AppendText(
+                    request, new Phrase(
+                        "Простите, текст слишком длинный, постарайтесь прочитать одну или две строчки",
+                        "Текст слишком длинный. Для определения размера нужна одна-две строки",
+                        "Прости, текст слишком длинный, давай ровно одну или две строчки"
+                    )
+                )
+                .AppendSendData("state_updated", JsonConvert.SerializeObject(ParseResult.Empty))
+                .AppendSuggestions(RandomSuggestion(), "Помощь", "Выход");
             return response;
         }
 

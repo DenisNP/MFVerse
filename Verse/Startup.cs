@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Verse.Abstract;
-using Verse.Models;
 using Verse.Services;
 
 namespace Verse
@@ -25,7 +23,6 @@ namespace Verse
             services.AddCors();
             services.AddMemoryCache();
 
-            services.AddSingleton<IStateStorage<UserState>, SberDbStateStorage>();
             services.AddSingleton<SaluteService>();
         }
 
