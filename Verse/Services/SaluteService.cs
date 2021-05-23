@@ -37,14 +37,14 @@ namespace Verse.Services
             if (request.HasWords("выход", "выйти", "закрыть", "закрой"))
                 return Exit(request);
 
-            if (request.Tokens.Length <= 2)
+            if (request.Tokens.Length < 3)
             {
                 if (request.HasWords("помощь", "что уметь", "что мочь"))
                     return Help(request);
 
                 return TooShort(request);
             } 
-            else if (request.Tokens.Length >= 8)
+            else if (request.Tokens.Length > 10)
             {
                 return TooLong(request);
             }
