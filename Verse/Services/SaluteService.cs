@@ -71,7 +71,7 @@ namespace Verse.Services
                 "<speak>Здоровья вам желаю, <break time=\"1ms\" />леди или сэр.<break time=\"200ms\" />" +
                 "Читайте мне строку, я вам скажу размер.</speak>",
                 "<speak>Вам, пользователь, здравствовать желаю. <break time=\"200ms\" />" +
-                "Строку отправьте — я размер узна'ю.</speak>",
+                "Строку отправьте — я размер <break time=\"1ms\" />узна'ю.</speak>",
                 "<speak>Привет-привет, <break time=\"1ms\" />любимый юзер мой. <break time=\"200ms\" />" +
                 "Прочти мне стих, пойму размер любой!<speak>"
             );
@@ -108,7 +108,7 @@ namespace Verse.Services
             // return parsed phrase and foot
             var foot = new Foot(result.FootType);
             response
-                .AppendText($"<speak>{foot.Name}<break time=\"600ms\" />\n{foot.Description}</speak>")
+                .AppendText($"<speak>{foot.Name}<break time=\"400ms\" />\n{foot.Description}</speak>")
                 .AppendSendData("state_updated", JsonConvert.SerializeObject(result))
                 .AppendSuggestions(RandomSuggestion(), "Помощь", "Выход");
 
@@ -269,11 +269,11 @@ namespace Verse.Services
                     request,
                     new Phrase(
                         "Прочитайте мне строку из стихотворения, и я скажу вам его стихотворный размер. " +
-                        "Пока что я понимаю классические двухсложные и трёхсложные размеры.",
+                        "Пока что я понимаю классические двусложные и трёхсложные размеры.",
                         "Прочитайте мне строку из стихотворения, и я определю его стихотворный размер. " +
-                        "На настоящий момент я понимаю классические двухсложные и трёхсложные размеры.",
+                        "На настоящий момент я понимаю классические двусложные и трёхсложные размеры.",
                         "Прочитай мне строчку из стихотворения, и я скажу тебе его стихотворный размер. " +
-                        "Пока что я понимаю простые двухсложные и трёхсложные размеры."
+                        "Пока что я понимаю простые двусложные и трёхсложные размеры."
                     )
                 )
                 .AppendSendData("state_updated", JsonConvert.SerializeObject(ParseResult.Empty))
