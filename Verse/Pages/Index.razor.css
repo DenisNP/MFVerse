@@ -9,6 +9,7 @@
     flex-wrap: wrap;
     font-family: "MonotypeMine", serif;
     font-size: 26px;
+    align-items: baseline;
 }
 
 .simple {

@@ -1,7 +1,7 @@
 ﻿let A;
 
 function initializeClient(token, appReference) {
-    const initPhrase = 'запусти формулы по алгебре';
+    const initPhrase = 'запусти стихотворный размер';
 
     log('token got: ' + token);
 

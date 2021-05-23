@@ -210,10 +210,10 @@ namespace Verse.Models.Salute.Web
 
         [JsonIgnore]
         public string[] Tokens => TokenizedElementsList
-            .Select(t => t.RawText.ToLower().Trim())
+            .Select(t => string.IsNullOrEmpty(t.OriginalText) ? t.RawText.ToLower().Trim() : t.OriginalText.ToLower().Trim())
             .Where(t => t.Length > 0 && (_cyrillic.IsMatch(t) || _latin.IsMatch(t)))
             .ToArray();
-        
+
         [JsonIgnore]
         public string[] Lemmas => TokenizedElementsList
             .Select(t => t.Lemma.ToLower().Trim())
@@ -231,6 +231,9 @@ namespace Verse.Models.Salute.Web
         
         [JsonProperty("lemma")]
         public string Lemma { get; set; }
+        
+        [JsonProperty("original_text")]
+        public string OriginalText { get; set; }
     }
 
     public class Meta

@@ -43,7 +43,7 @@ namespace Verse.Services
             if (request.HasWords("выход", "выйти", "закрыть", "закрой"))
                 return Exit(request);
 
-            if (request.Tokens.Length <= 3)
+            if (request.Tokens.Length <= 2)
             {
                 if (request.HasWords("помощь", "что уметь", "что мочь"))
                     return Help(request);
@@ -95,7 +95,7 @@ namespace Verse.Services
             var response = new SaluteResponse(request);
             ParseResult result = GetParseResult(request.Tokens, out int bestDistance);
             
-            if (bestDistance > 8 || result.FootType == FootType.Unknown)
+            if (bestDistance > 10 || result.FootType == FootType.Unknown)
             {
                 // cannot determine foot
                 response
@@ -122,6 +122,7 @@ namespace Verse.Services
             bestDistance = int.MaxValue;
             foreach (FootType footType in Enum.GetValues<FootType>())
             {
+                if (footType == FootType.Unknown) continue;
                 var foot = new Foot(footType);
                 int dist = DistanceToFoot(foot, stresses);
                 if (dist < bestDistance)
@@ -137,6 +138,8 @@ namespace Verse.Services
             // distribute syllables
             List<int> needStresses = bestFoot.GetMaskOfLength(stresses.Length).ToList();
             Syllable[][] syllables = tokens.Select(t => SplitWord(t, needStresses)).ToArray();
+            if (syllables.Length > 0 && syllables[0].Length > 0)
+                syllables[0][0].Text = syllables[0][0].Text.ToUpperFirst();
 
             return new ParseResult
             {
@@ -150,8 +153,11 @@ namespace Verse.Services
             var syllables = new List<Syllable>();
             var lastConsonant = "";
             
-            void AddConsonant()
+            void FlushConsonant()
             {
+                if (string.IsNullOrEmpty(lastConsonant))
+                    return;
+                
                 syllables.Add(new Syllable
                 {
                     Text = lastConsonant,
@@ -162,13 +168,14 @@ namespace Verse.Services
             
             foreach (string c in word.Select(t => t.ToString()))
             {
-                if (_vowels.Contains(c))
+                if (!_vowels.Contains(c))
                 {
-                    if (!string.IsNullOrEmpty(lastConsonant)) 
-                        AddConsonant();
+                    lastConsonant += c;
                 }
                 else
                 {
+                    FlushConsonant();
+                    
                     int nextStress = stresses.First();
                     stresses.RemoveAt(0);
                     syllables.Add(new Syllable
@@ -178,7 +185,8 @@ namespace Verse.Services
                     });
                 }
             }
-
+            
+            FlushConsonant();
             return syllables.ToArray();
         }
 
@@ -195,9 +203,12 @@ namespace Verse.Services
                     if (maskStress == 0 && wordStress == 1)
                         dist += 5;
                     else if (maskStress == 1 && wordStress == 0)
-                        dist += 1;
+                        dist += 2;
                 }
             }
+
+            if (foot.Mask.Last() != stresses.Last())
+                dist += 1;
 
             return dist;
         }
@@ -233,8 +244,17 @@ namespace Verse.Services
             
             // only certain vowels are accents, any other are not
             int[] accents = Enumerable.Repeat(0, vCount).ToArray();
-            foreach (int knownAccent in knownAccents) 
-                accents[knownAccent - 1] = 1;
+            if (knownAccents.Count == 1)
+            {
+                // strong single accent
+                accents[knownAccents.First() - 1] = 1;
+            }
+            else
+            {
+                // various accents
+                foreach (int knownAccent in knownAccents) 
+                    accents[knownAccent - 1] = -1;
+            }
 
             return accents;
         }

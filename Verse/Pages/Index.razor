@@ -2,7 +2,7 @@
 @using Verse.Models
 @inherits MainPage
 
-@if (LastResult.Syllables == null)
+@if (LastResult?.Syllables == null)
 {
     <div class="flex-center">Скажите фразу</div>
 }
