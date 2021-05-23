@@ -14,7 +14,11 @@ namespace Verse.Services
     {
         private static readonly string[] Suggestions =
         {
-            ""
+            "Буря мглою небо кроет",
+            "Мороз и солнце день чудесный",
+            "На заре ты её не буди",
+            "Тучки небесные вечные странники",
+            "Есть женщины в русских селеньях"
         };
         private readonly Random _random = new();
         private NestorMorph _nestor;
@@ -269,10 +273,10 @@ namespace Verse.Services
                         "Прочитайте мне строку из стихотворения, и я определю его стихотворный размер. " +
                         "На настоящий момент я понимаю классические двухсложные и трёхсложные размеры.",
                         "Прочитай мне строчку из стихотворения, и я скажу тебе его стихотворный размер. " +
-                        "Пока что я могу понимать простые двухсложные и трёхсложные размеры."
+                        "Пока что я понимаю простые двухсложные и трёхсложные размеры."
                     )
                 )
-                .AppendSendData("state_update", JsonConvert.SerializeObject(ParseResult.Empty))
+                .AppendSendData("state_updated", JsonConvert.SerializeObject(ParseResult.Empty))
                 .AppendSuggestions(RandomSuggestion(), "Помощь", "Выход");
             return response;
         }
