@@ -106,9 +106,10 @@ namespace Verse.Services
             }
             
             // return parsed phrase and foot
+            var stepsText = $"В данном случае стих {result.StepsName}.";
             var foot = new Foot(result.FootType);
             response
-                .AppendText($"<speak>{foot.Name}<break time=\"400ms\" />\n{foot.Description}</speak>")
+                .AppendText($"<speak>{foot.Name}<break time=\"400ms\" />\n{foot.Description}. <break time=\"200ms\" />{stepsText}</speak>")
                 .AppendSendData("state_updated", JsonConvert.SerializeObject(result))
                 .AppendSuggestions(RandomSuggestion(), "Помощь", "Выход");
 

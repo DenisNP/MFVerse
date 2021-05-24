@@ -14,7 +14,6 @@ namespace Verse.Pages
         [Inject]
         public IJSRuntime Js { get; set; }
         public ParseResult LastResult { get; set; }
-        public Foot Foot => new (LastResult.FootType);
 
         protected override Task OnInitializedAsync()
         {

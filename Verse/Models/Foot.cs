@@ -35,14 +35,34 @@ namespace Verse.Models
             _ => throw new ArgumentOutOfRangeException()
         };
 
+        public int StepsCount
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case FootType.Iambic:
+                    case FootType.Chorea:
+                        return 2;
+                    case FootType.Dactyl:
+                    case FootType.Amphibrachium:
+                    case FootType.Anapest:
+                        return 3;
+                    case FootType.Unknown:
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
         public string Schema => Type switch
         {
             FootType.Unknown => "",
-            FootType.Iambic => "— | — |",
-            FootType.Chorea => "| — | —",
-            FootType.Dactyl => "| — — | — —",
-            FootType.Amphibrachium => "— | — — | —",
-            FootType.Anapest => "— — | — — |",
+            FootType.Iambic => " — |",
+            FootType.Chorea => "| —",
+            FootType.Dactyl => "| — —",
+            FootType.Amphibrachium => "— | —",
+            FootType.Anapest => "— — |",
             _ => throw new ArgumentOutOfRangeException()
         };
 

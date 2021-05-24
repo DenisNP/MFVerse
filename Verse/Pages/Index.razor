@@ -44,10 +44,10 @@ else
             </div>
             <div class="foot-info">
                 <div class="foot-title">
-                    <div class="foot-schema">@Foot.Schema</div>
-                    <div class="foot-name"><i>@Foot.Name</i></div>
+                    <div class="foot-schema">@LastResult.FullSchema</div>
+                    <div class="foot-name"><i>@(LastResult.StepsName + " " + LastResult.Foot.Name)</i></div>
                 </div>
-                <div class="foot-desc"><i>@Foot.Description</i></div>
+                <div class="foot-desc"><i>@LastResult.Foot.Description</i></div>
             </div>
         </div>
     </div>

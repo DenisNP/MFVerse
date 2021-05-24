@@ -254,5 +254,26 @@ namespace Verse.Helpers
         {
             return tokens.Length <= expected.Length + maxExcessAllowed && expected.All(tokens.Contains);
         }
+
+        public static string GetStepsName(int stepsCount)
+        {
+            string prefix = stepsCount switch
+            {
+                0 => "",
+                1 => "одно",
+                2 => "двух",
+                3 => "трёх",
+                4 => "четырёх",
+                5 => "пяти",
+                6 => "шести",
+                7 => "семи",
+                8 => "восьми",
+                9 => "девяти",
+                10 => "десяти",
+                _ => "много"
+            };
+
+            return $"{prefix}стопный";
+        }
     }
 }
