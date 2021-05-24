@@ -72,6 +72,11 @@
     left: 5px;
 }
 
+.capital {
+    top: -6px;
+    left: 8px;
+}
+
 .select-color {
     color: #008642;
 }

@@ -14,22 +14,29 @@ else
     <div class="flex-center">
         <div class="result-container">
             <div class="syllables-container">
-                @foreach (Syllable[] word in LastResult.Syllables)
+                @for (var i = 0; i < LastResult.Syllables.Length; i++)
                 {
+                    Syllable[] word = LastResult.Syllables[i];
                     <span class="word">
-                        @foreach (Syllable syllable in word)
+                        @for (var k = 0; k < word.Length; k++)
                         {
+                            Syllable syllable = word[k];
                             if (syllable.Type == SyllableType.Consonant)
                             {
                                 <span class="simple">@syllable.Text</span>
                             }
-                            else if (syllable.Type == SyllableType.Unstressed)
-                            {
-                                <span class="unstressed select-color">@syllable.Text</span>
-                            }
                             else
                             {
-                                <span class="stressed select-color">@(syllable.Text)<span class="stress select-color">´</span></span>
+                                if (syllable.Type == SyllableType.Unstressed)
+                                {
+                                    <span class="unstressed select-color">@syllable.Text</span>
+                                }
+                                else
+                                {
+                                    <span class="stressed select-color">
+                                        @syllable.Text<span class="@("stress select-color" + (i == 0 && k == 0 ? " capital" : ""))">´</span>
+                                    </span>
+                                }
                             }
                         }
                     </span>
