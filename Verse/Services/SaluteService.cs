@@ -80,7 +80,7 @@ namespace Verse.Services
                 .AppendText(request, phrase)
                 .AppendSuggestions(RandomSuggestion(), "Помощь", "Выход");
 
-            response.Payload.AutoListening = true;
+            response.EnableAutoListening();
             return response;
         }
 

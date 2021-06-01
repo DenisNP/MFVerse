@@ -22,10 +22,14 @@ namespace Verse.Models.Salute.Web
         [JsonProperty("payload")]
         public SaluteResponsePayload Payload { get; set; }
 
+        private readonly SaluteRequest _request;
+
         public SaluteResponse(SaluteRequest request) : this(request, new SaluteResponsePayload()) { }
 
         public SaluteResponse(SaluteRequest request, SaluteResponsePayload payload)
         {
+            _request = request;
+	
             MessageId = request.MessageId;
             SessionId = request.SessionId;
             Uuid = request.Uuid;
@@ -35,6 +39,8 @@ namespace Verse.Models.Salute.Web
 
         public SaluteResponse(SaluteRequest request, string text, bool noBubble = false)
         {
+            _request = request;
+	
             MessageId = request.MessageId;
             SessionId = request.SessionId;
             Uuid = request.Uuid;
@@ -46,6 +52,11 @@ namespace Verse.Models.Salute.Web
 
             if (!noBubble)
                 Payload.Items.Add(new BubbleItem(text));
+        }
+
+        public void EnableAutoListening()
+        {
+            Payload?.EnableAutoListening(_request);
         }
     }
     
@@ -78,13 +89,21 @@ namespace Verse.Models.Salute.Web
         public Device Device { get; set; }
 
         [JsonProperty("auto_listening")]
-        public bool AutoListening { get; set; }
+        public bool AutoListening { get; private set; }
 
         [JsonProperty("asr_hints")]
         public AsrHints AsrHints { get; set; }
 
         [JsonProperty("finished")]
         public bool Finished { get; set; }
+
+        public void EnableAutoListening(SaluteRequest request)
+        {
+            if (request?.Payload?.Device?.Surface != "STARGATE")
+            {
+                AutoListening = true;
+            }
+        }
     }
 
     public class Suggestions
